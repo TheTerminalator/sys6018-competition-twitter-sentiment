@@ -52,6 +52,7 @@ coef(mn95)
 library(boot)
 cv.err = cv.glm(data.95.train, mn95)
 cv.err$delta
+#Cross validation estimate for the test error:
 #Test MSE
 #[1] 0.6228974 0.6228932
 
