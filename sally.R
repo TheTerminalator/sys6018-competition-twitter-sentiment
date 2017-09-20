@@ -35,7 +35,102 @@ remSparse <- function (perc) {
   return(data.new)
 }
 
-# Multinomial regression with 95% sparse terms removed
+# ===========================================================================================
+# LOOCV function for multinomial regression
+
+multinom.loocv <- function(data) {
+  numcorrect <- 0
+  sink("/dev/null")
+  
+  for (i in 1:nrow(data)) {
+    test <- data[i,]
+    train <- data[-i,]
+    mn <- multinom(sentiment ~ ., data = train)
+    pred <- predict(mn, newdata=test, "class")
+    if (pred==test$sentiment) {numcorrect <- numcorrect + 1}
+  }
+  
+  sink()
+  return(numcorrect/nrow(data))
+}
+
+lm.loocv <- function(data) {
+  numcorrect <- 0
+  
+  for (i in 1:nrow(data)) {
+    test <- data[i,]
+    train <- data[-i,]
+    lm <- lm(sentiment ~ ., data = train)
+    pred <- predict(lm, newdata=test, type="response")
+    pred <- round(pred, 0)
+    if (pred==test$sentiment) {numcorrect <- numcorrect + 1}
+  }
+  
+  return(numcorrect/nrow(data))
+}
+
+# TFIDF WITH 98% REMOVED
+data.98 <- remSparse(.98)
+data.98.train <- data.frame(data.98[1:981,], sentiment = train.data$sentiment)
+
+perc_lm98 <- lm.loocv(data.98.train)
+perc_lm98 # 0.6106014
+
+perc_correct98 <- multinom.loocv(data.98.train)
+perc_correct98 # 0.5922528
+
+# TFIDF WITH 97% REMOVED
+data.97 <- remSparse(.97)
+data.97.train <- data.frame(data.97[1:981,], sentiment = train.data$sentiment)
+
+perc_lm97 <- lm.loocv(data.97.train)
+perc_lm97 # 0.6106014
+
+perc_correct97 <- multinom.loocv(data.97.train)
+perc_correct97 # 0.6034659
+
+# TFIDF WITH 96% REMOVED
+data.96 <- remSparse(.96)
+data.96.train <- data.frame(data.96[1:981,], sentiment = train.data$sentiment)
+
+perc_lm96 <- lm.loocv(data.96.train)
+perc_lm96 # 0.6146789
+
+perc_correct96 <- multinom.loocv(data.96.train)
+perc_correct96 # 0.6126402
+
+# TFIDF WITH 95% REMOVED
+data.95 <- remSparse(.95)
+data.95.train <- data.frame(data.95[1:981,], sentiment = train.data$sentiment)
+
+perc_lm95 <- lm.loocv(data.95.train)
+perc_lm95 # 0.6146789
+
+perc_correct95 <- multinom.loocv(data.95.train)
+perc_correct95 # 0.6136595
+
+# TFIDF WITH 94% REMOVED
+data.94 <- remSparse(.94)
+data.94.train <- data.frame(data.94[1:981,], sentiment = train.data$sentiment)
+
+perc_lm94 <- lm.loocv(data.94.train)
+perc_lm94 # 0.6146789
+
+perc_correct94 <- multinom.loocv(data.94.train)
+perc_correct94 # 0.6136595
+
+# ===========================================================================================
+
+# linear model with 96% sparse terms removed
+data <- remSparse(.96)
+train <- data.frame(data[1:981,], sentiment = train.data$sentiment)
+test <- data[982:nrow(data),]
+
+model <- lm(sentiment~., data=train)
+preds <- predict(model, newdata=test, type="response")
+preds.rounded <- round(preds, 0)
+
+# multinomial regression with 95% sparse terms removed
 data.95 <- remSparse(.95)
 data.95.train <- data.frame(data.95[1:981,], sentiment = train.data$sentiment)
 data.95.test <- data.frame(data.95[982:1960,])
@@ -47,4 +142,4 @@ sum(mn95.preds==3)/length(mn95.preds) # all 3s
 
 # ===========================================================================================
 predictions <- data.frame(id=test.data$id, sentiment=mn95.preds)
-write.table(predictions.mn.995, file = "linreg-predictions-3.csv", row.names=F, col.names=c("id", "sentiment"), sep=",")
+write.table(predictions.mn.995, file = "linear-predictions.csv", row.names=F, col.names=c("id", "sentiment"), sep=",")
