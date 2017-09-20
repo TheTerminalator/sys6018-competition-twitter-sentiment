@@ -33,10 +33,6 @@ tweets.clean.tfidf
 tfidf.99 = removeSparseTerms(tweets.clean.tfidf, 0.99)  # remove terms that are absent from at least 99% of documents (keep most terms)
 tfidf.99
 
-# ?
-tfidf.98 = removeSparseTerms(tweets.clean.tfidf, 0.98)  # remove terms that are absent from at least 95% of documents
-tfidf.98
-
 # Convert the document-term matrix to a dataframe
 df.tfidf.99 = as.data.frame(as.matrix(tfidf.99))
 df.tfidf.99 = cbind(tweets.comb.df$sentiment, df.tfidf.99)
@@ -44,14 +40,41 @@ colnames(df.tfidf.99)[1] <- "sentiment"
 # Create a dataframe of distances between variables
 df.dist.matrix = as.matrix(dist(df.tfidf.99))
 
+# Cross Validation of KNN
+# Split data by rownumber into two equal portions
+train <- sample(nrow(df.tfidf.99[1:981,]), ceiling(nrow(df.tfidf.99[1:981,]) * .50))
+test <- (1:nrow(df.tfidf.99[1:981,]))[- train]
+# Isolate classifier
+cl <- df.tfidf.99[1:981, "sentiment"]
+# Create model data and remove "category"
+modeldata <- df.tfidf.99[1:981,!colnames(df.tfidf.99[1:981,]) %in% "sentiment"]
+# Create model: training set, test set, training set classifier
+knn.pred1 <- knn(modeldata[train, ], modeldata[test, ], cl[train], k = 1)
+knn.pred2 <- knn(modeldata[train, ], modeldata[test, ], cl[train], k = 3)
+knn.pred3 <- knn(modeldata[train, ], modeldata[test, ], cl[train], k = 5)
+knn.pred4 <- knn(modeldata[train, ], modeldata[test, ], cl[train], k = 10)
+# Confusion matrix
+conf.mat1 <- table("Predictions" = knn.pred1, Actual = cl[test])
+conf.mat2 <- table("Predictions" = knn.pred2, Actual = cl[test])
+conf.mat3 <- table("Predictions" = knn.pred3, Actual = cl[test])
+conf.mat4 <- table("Predictions" = knn.pred4, Actual = cl[test])
+# Accuracy
+(accuracy <- sum(diag(conf.mat1))/length(test) * 100) # 48.77551
+(accuracy <- sum(diag(conf.mat2))/length(test) * 100) # 52.85714
+(accuracy <- sum(diag(conf.mat3))/length(test) * 100) # 60.20408
+(accuracy <- sum(diag(conf.mat4))/length(test) * 100) # 60.40816
+# So k=5 gives a pretty good result compared to k=1 and k=3
+# and increasing k from 5 does not increase accuracy much
+
+# knn from scratch
 # Create a dataframe to store k nearest index for each tweet
 knn_idx <- data.frame()
 for (i in 982:1960){
-  knn_idx <- rbind(knn_idx, sort(df.dist.matrix[1:981, i], index.return = TRUE)$ix[1:3])
+  knn_idx <- rbind(knn_idx, sort(df.dist.matrix[1:981, i], index.return = TRUE)$ix[1:5])
 }
 # Find the corresponding sentiment value for each index
 for (i in 1:979){
-  for (j in 1:3){
+  for (j in 1:5){
     knn_idx[i, j] <- tweets.comb.df[knn_idx[i, j],]$sentiment
   }
 }
