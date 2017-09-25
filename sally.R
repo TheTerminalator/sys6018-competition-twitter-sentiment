@@ -119,10 +119,17 @@ perc_lm94 # 0.6146789
 perc_correct94 <- multinom.loocv(data.94.train)
 perc_correct94 # 0.6136595
 
+# TFIDF WITH 93% REMOVED
+data.93 <- remSparse(.93)
+data.93.train <- data.frame(data.93[1:981,], sentiment = train.data$sentiment)
+
+perc_correct93 <- multinom.loocv(data.93.train)
+perc_correct93 # 0.6136595
+
 # ===========================================================================================
 
-# linear model with 96% sparse terms removed
-data <- remSparse(.96)
+# linear model with 90% sparse terms removed
+data <- remSparse(.93)
 train <- data.frame(data[1:981,], sentiment = train.data$sentiment)
 test <- data[982:nrow(data),]
 
@@ -130,16 +137,18 @@ model <- lm(sentiment~., data=train)
 preds <- predict(model, newdata=test, type="response")
 preds.rounded <- round(preds, 0)
 
-# multinomial regression with 95% sparse terms removed
-data.95 <- remSparse(.95)
-data.95.train <- data.frame(data.95[1:981,], sentiment = train.data$sentiment)
-data.95.test <- data.frame(data.95[982:1960,])
+sum(preds.rounded==3)/length(preds.rounded) # 0.9969356
 
-mn95 <- multinom(sentiment ~ ., data = data.95.train)
-mn95.preds <- predict(mn95, newdata=test.95, "class")
+# multinomial regression with 94% sparse terms removed
+data.mn <- remSparse(.94)
+data.mn.train <- data.frame(data.mn[1:981,], sentiment = train.data$sentiment)
+data.mn.test <- data.frame(data.mn[982:1960,])
 
-sum(mn95.preds==3)/length(mn95.preds) # all 3s
+mn <- multinom(sentiment ~ ., data = data.mn.train)
+mn.preds <- predict(mn, newdata=data.mn.test, "class")
+
+sum(mn.preds==3)/length(mn.preds) # 0.9448417
 
 # ===========================================================================================
-predictions <- data.frame(id=test.data$id, sentiment=mn95.preds)
-write.table(predictions.mn.995, file = "linear-predictions.csv", row.names=F, col.names=c("id", "sentiment"), sep=",")
+predictions <- data.frame(id=test.data$id, sentiment=preds.rounded)
+write.table(predictions, file = "lin-predictions.csv", row.names=F, col.names=c("id", "sentiment"), sep=",")
