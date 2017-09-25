@@ -2,6 +2,6 @@
 
 ## Roles:
 
-**Tyler**: Data cleaning/exploration and alternative models.
-**Sally**: Implement parametric model and LOOCV for that model.
-**Isabelle**: Implement KNN from scratch.
+* **Tyler**: Data cleaning/exploration and alternative models.
+* **Sally**: Implement parametric model and LOOCV for that model.
+* **Isabelle**: Implement KNN from scratch.
