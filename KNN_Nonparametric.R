@@ -1,6 +1,5 @@
 # SYS 6018: Competition 3
 # Xinyang Liu, Sally Gao, Tyler Lewris
-# xl9qw,
 
 library(tm)
 
