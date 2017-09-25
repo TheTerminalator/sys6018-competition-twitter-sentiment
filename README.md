@@ -4,4 +4,4 @@
 
 * **Tyler**: Data cleaning/exploration and alternative models.
 * **Sally**: Implement parametric model and LOOCV for that model.
-* **Isabelle**: Implement KNN from scratch.
+* **Isabelle**: Implement KNN from scratch and cross validation for that model.
