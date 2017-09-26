@@ -62,8 +62,12 @@ conf.mat4 <- table("Predictions" = knn.pred4, Actual = cl[test])
 (accuracy <- sum(diag(conf.mat2))/length(test) * 100) # 52.85714
 (accuracy <- sum(diag(conf.mat3))/length(test) * 100) # 60.20408
 (accuracy <- sum(diag(conf.mat4))/length(test) * 100) # 60.40816
-# So k=5 gives a pretty good result compared to k=1 and k=3
+#-----------------RATIONALE FOR K IN KNN MODEL----------------------
+#After careful analysis and several different k values, it is clear that
+#k=5 gives a pretty good result compared to k=1 and k=3
 # and increasing k from 5 does not increase accuracy much
+#Therefore, we will be using K=5 in our non-parametric model as it is clearly the value that
+#gives us the best result when compared to other smaller or larger k values.
 
 # knn from scratch
 # Create a dataframe to store k nearest index for each tweet
