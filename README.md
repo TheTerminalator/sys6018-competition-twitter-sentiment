@@ -1,10 +1,10 @@
 # sys6018-competition-twitter-sentiment
 
 **Parametric Model**: parametric_model.R
-Best Kaggle Submission Score: 0.67893
+*Parametric Model Score*: Best Kaggle Submission Score: 0.67893
 
 **KNN from scratch**: KNN_Nonparametric.R
-Best Kaggle Submission Score: 0.59713
+*Non Parametric Model Score*: Best Kaggle Submission Score: 0.59713
 
 ## Roles:
 
