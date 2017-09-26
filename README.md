@@ -5,6 +5,7 @@
 *Parametric Model Score*: Best Kaggle Submission Score: 0.67893
 
 **KNN from scratch**: KNN_Nonparametric.R
+
 *Non Parametric Model Score*: Best Kaggle Submission Score: 0.59713
 
 ## Roles:
