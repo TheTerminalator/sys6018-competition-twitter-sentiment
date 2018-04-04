@@ -1,5 +1,3 @@
-# sys6018-competition-twitter-sentiment
-
 **Parametric Model**: parametric_model.R
 
 *Parametric Model Kaggle Submission Score*: 0.67893
@@ -7,12 +5,6 @@
 **KNN from scratch**: KNN_Nonparametric.R
 
 *Non Parametric Model Kaggle Submission Score*: 0.59713
-
-## Roles:
-
-* **Tyler**: Data cleaning/exploration and alternative models.
-* **Sally**: Implement parametric model and LOOCV for that model.
-* **Isabelle**: Implement KNN from scratch and cross validation for that model.
 
 ## Reflection:
 
